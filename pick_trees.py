@@ -65,6 +65,7 @@ for name in filenames:
     plt.figure(1)
     plt.cla()
     plt.imshow(image, cmap="gray")
+    plt.axhline(image.shape[0]/2, color='r')
     plt.title(name)
     trunks = []
     print("Click all visible tree trunk positions")
@@ -72,8 +73,19 @@ for name in filenames:
         click = plt.ginput()
         if len(click) > 0:
             cut_x = click[0][0]
-            plt.axvline(cut_x, color='r')
-            trunks.append(cut_x)
+            plt.axvline(cut_x, color='g')
+            plt.title(name+" [confirm position]")
+            click2 = plt.ginput()
+            if len(click2) > 0:
+                plt.axvline(cut_x, color='lime')
+                trunks.append(cut_x)
+            else:
+                plt.cla()
+                plt.imshow(image, cmap="gray")
+                plt.axhline(image.shape[0]/2, color='r')
+                for x in trunks:
+                    plt.axvline(x, color='lime')
+            plt.title(name)
         else:
             break
     write_trunks(trunks, out_dir+"trunks_"+name.split('.')[0]+".txt")
